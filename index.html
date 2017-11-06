@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<title>Funkcionální architektura ve vodách Angularu</title>
+
+<meta name="description" content="Funkcionální architektura ve vodách Angularu">
+<meta name="author" content="Aleš Najmann">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/css/reveal.css">
+<link rel="stylesheet" href="n.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/lib/css/zenburn.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement('link');
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/css/print/pdf.css' : 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/css/print/paper.css';
+document.getElementsByTagName('head')[0].appendChild(link);
+</script>
+
+<!--[if lt IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/lib/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<div class="reveal">
+
+<div class="slides">
+<section>
+<h1>Funkcionální architektura ve vodách Angularu</h1>
+<p>
+<a href="mailto:ales.najmann@gmail.com?subject=Angular+FP">Aleš Najmann</a><br>
+</p>
+</section>
+
+<section>
+  <h2>Náplň dnešního povídání</h2>
+  <ol>
+    <li>Architektura, proč se jí zabývat?</li>
+    <li>Objektově orientovaný přístup</li>
+    <li>Funkcionální přístup</li>
+    <li>Angular - stavu všanc</li>
+    <li>Angular - zkrocení stavu</li>
+  </ol>
+</section>
+
+<section>
+  <section>
+        <h2>Architektura</h2>
+        <img src="./katedrala.png" width="480">
+        <p>
+          Je procesem i produktem plánování, návrhu a konstrukce staveb<br>nebo jiných struktur.
+        </p>      
+  </section>
+
+  <section>
+    <h2>Architektura</h2>
+    <ul>
+      <li>Elementy</li>
+      <li>Vztahy mezi elementy</li>
+      <li>Vlastnosti elementů a vztahů mezi nimi</li>
+    </ul>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h2>Objektově orientovaný přístup</h2>
+    <ul>
+      <li>Království jmen - The Kingdom of nouns</li>
+      <li>Elementy - třídy (blueprints), objekty, metody</li>
+      <li>Programování dominantně s vedlejšími efekty</li>
+      <li>=&gt; všudypřítomný stav</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>S.O.L.I.D.</h2>
+    <table>
+      <thead>
+        <tr>
+          <td>Písmeno</td>
+          <td>Znamená</td>
+          <td>Koncept</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>S</td>
+          <td><small>Single responsibility principle</small></td>
+          <td><small>Třída by měla mít jenom jediný důvod pro změnu (specifikace chování)</small></td>
+        </tr>
+        <tr>
+          <td>O</td>
+          <td><small>Open/closed principle</small></td>
+          <td><small>Třídy mají být otevřené pro rozšíření, ale uzavřené pro modifikaci</small></td>
+        </tr>
+        <tr>
+          <td>L</td>
+          <td><small>Liskov substitution principle</small></td>
+          <td><small>Potomek třídy může v implementaci vždy nahradit předka</small></td>
+        </tr>                  
+        <tr>
+          <td>I</td>
+          <td><small>Interface segregation principle</small></td>
+          <td><small>Více jednoduchých klientských rozhraní je zpravidla lepší než jedno velké univerzální rozhraní</small></td>
+        </tr>                  
+        <tr>
+          <td>D</td>
+          <td><small>Dependency inversion principle</small></td>
+          <td><small>Závislosti na abstrakci nikoli konkrétní implementaci. Také spojováno s Hollywood principle = “Don’t call us, we’ll call you”</small></td>
+         </tr>                  
+       </tbody>
+    </table>
+  </section>
+
+  <section>
+    <p>The Law of Demeter = Princip minimální znalosti</p>
+    <p>Třídy mají komunikovat pouze s blízkými spřátelenými třídami.</p>
+    <p><i>"Talk only to your immediate friends"</i></p>
+    <img src="./tight.jpg">
+  </section>
+
+  <section>
+    <h2>ZOO návrhových vzorů v OOP</h2>
+    <table>
+      <tr>
+        <td>Abstract factory</td>
+        <td>Adapter</td>
+        <td>Builder</td>
+      </tr>
+      <tr>
+        <td>Chain of responsibility</td>
+        <td>Command</td>
+        <td>Decorator</td>
+      </tr>
+      <tr>
+        <td>Flyweight</td>
+        <td>Observer</td>
+        <td>Proxy</td>
+      </tr>
+      <tr>
+        <td>Mediator</td>
+        <td>Memento</td>
+        <td>Singleton</td>
+      </tr>
+      <tr>
+        <td>Strategy</td>
+        <td>State</td>
+        <td>Template method</td>
+      </tr>
+    </table>
+  </section>
+  
+  <section>
+    <h2>Co je cílem OO architektury?</h2>
+    <ul>
+      <li>Obvykle jde o ustanovení hierarchie komponent a tříd, které vzájemně participují na řešení problému</li>
+      <li>Naplnění výše zmíněných principů má zajistit flexibilitu řešení, správnost a snadnou testovatelnost</li>
+      <li>V praxi jsou ovšem běžné zásadní odchylky od teorie a zvolené modely fungování nebývají zakotvené v realitě</li>
+      <li>Udělat správně OO architekturu je nejméně o řád těžší než slibují učebnice</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2></h2>
+    <img src="./tragedy-of-the-commons.png">
+  </section>
+
+  <section>
+      <p><i>
+        Lékař, architekt a programátor se přou o to, čí povolání je nejstarší. Lékař praví “Eva byla stvořena z žebra Adamova.
+        Byl to první chirurgický výkon. Medicína je tedy nejstarším povoláním.”
+        Architekt se nesouhlasně zamručí. “I kdepak! Bůh musel nejdříve svět navrhnout a za šest dní postavit. Byl tedy první architekt.
+        Předtím byla jenom prázdnota a chaos.” 
+        Programátor, který dosud jen poslouchal se zle pousmál “Pánové, odkud si myslíte, že se vzal ten chaos?”
+      </i></p>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h2>Funkcionální přístup</h2>
+    <ul>
+      <li>Království sloves - The Kingdom of verbs</li>
+      <li>Elementy - funkce, hodnoty, kompozice = funkce jako hodnoty</li>
+      <li>Programování dominantně bez vedlejšími efektů</li>    
+      <li>Eliminace nebo alespoň minimalizace stavu</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Funkce I.</h2>
+    <ul>
+      <li>Funkce bez vedlejších efektů - čisté (pure) funkce - matematické vlastnosti</li>
+      <li>Funkce s vedlejšími efekty - nečisté (impure) funkce</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Funkce II.</h2>
+    <ul>
+      <li>Funkce jako návratová hodnota nebo parametr (funkce vyšších řádů)</li>
+      <li>Funkce jako rozhraní</li>
+      <li>Funkce jako naplněný princip jediné odpovědnosti entity</li>
+    </ul>
+  </section>
+
+  <section>
+    <quote>
+      <i>“Sometimes, the elegant implementation is just a function.<br>Not a method.
+        <br>Not a class.<br>Not a framework.<br>Just a function.”</i><br>
+        -- John Carmack @ twitter</quote>
+  </section>
+
+  <section>
+      <h2>Otázka</h2>
+      <p>Které království byste si vybrali?</p>
+  </section>
+  
+</section>
+
+<section>
+    <section data-background="#1976d2">
+        <h2 class="frament">Jakou architekturu má Angular?</h2>
+        <p class="frament">
+          OOP. Komponenty. Služby. Třídy s metodami.
+        </p>
+        <p class="fragment">
+          Detekce změny stavu = Dirty checking. Změny se aplikují dle šablony do DOMu a na obraz.        
+        </p>
+        <p class="fragment">
+          RxJS, reaktivní asynchronní streamy. Modelují koncept hodnot v čase pomocí operátorů - podoba s API objektu Array.
+        </p>
+      </section>
+
+      <section data-background="#1976d2">
+    <h2>Stavební bloky aplikací v Angularu</h2>
+    <ul>
+      <li>Komponenty</li>
+      <li>Služby</li>
+      <li>Dependency Injection</li>
+      <li>Direktivy</li>
+      <li>Moduly</li>
+      <li>Router</li>
+      <li>Roury (pipes)</li>
+    </ul>
+  </section>
+   
+  <section data-background="#1976d2">
+    <h2>Komponenty</h2>
+    <p>
+      Komponenty označujeme dekorátorem <code>@Component</code>, který může obsahovat dodatečná metadata
+    </p>
+    <p>
+    Metadata říkají Angularu kde se nacházejí bloky, nutné pro spuštění komponenty.
+    </p>
+    <pre><code data-trim>
+    @Component({
+      selector: 'nice-button',
+      template: `<button class="nice"></button>`,
+      styles: [...]
+    })
+    export class NiceButton {
+      constructor() {}
+      // methods
+    } 
+    </code></pre>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Šablony</h2>
+    <pre><code data-trim>
+    &lt;p&gt;&lt;i&gt;Vyber superhrdinu ze seznamu&lt;/i&gt;&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li *ngFor=&quot;let hero of heroes&quot; (click)=&quot;selectHero(hero)&quot;&gt;
+        {{hero.name}}
+      &lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;hero-detail *ngIf=&quot;selectedHero&quot; [hero]=&quot;selectedHero&quot;&gt;&lt;/hero-detail&gt;
+    </code></pre>
+  </section>
+
+  <section data-background="#1976d2">
+    <h2>Data binding (pojivo)</h2>
+    <ul>
+      <li>Interpolace: <code>{{obj.name}}</code></li>
+      <li>Property binding: <code>[member]</code></li>
+      <li>Event binding: <code>(click)="pickOne(data)"</code></li>
+      <li>Two-way binding: <code>[(banana)]</code></li>
+    </ul>
+  </section>
+
+  <section data-background="#1976d2">
+    <h2>Služby</h2>
+    <p>Znovupoužitelná business logika</p>
+    <p>Služba je obvykle třída s úzce vymezenou zodpovědností</p>
+    <p>Je označena dekorátorem <code>@Injectable()</code> aby mohla participovat v DP</p>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Ukázka služby</h2>
+    <pre><code data-trim>
+    @Injectable()
+    export class SuperService {
+      doTrick() { 
+        return "Trick one";
+      }
+      doAnotherTrick(a: number, b: number) {
+        return Math.max(a, b) / 2;
+      }
+    }
+    </code></pre>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Dependency Injection I.</h2>
+    <img src="./injection.jpg">
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Dependency injection II.</h2>
+    <pre><code data-trim>
+    @Component({
+      selector: 'time-picker', template: '<div></div>',
+      providers: [TimePickerService]
+    })
+    export class TimePicker {
+      constructor(public service: TimePickerService) { }
+      //                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+      ngOnInit() { this.service.pick(); }
+      //           ^^^^^^^^^^^^^^^^^^^ použití závislosti       
+    }
+    
+    @Injectable()
+    export class TimePickerService {	
+      pick() {...}
+    }
+    </code></pre>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Dependency injection</h2>
+    <pre><code data-trim>
+    @Injectable()
+    export class TimePickerService {
+      constructor(private conversion: ConversionService) {}	
+      pick() { this.conversion.convert(10); }
+    }
+    
+    @Injectable()
+    export class ConversionService {
+      constructor() { }
+      convert(a: number): string { }
+    }
+    </code></pre>
+  </section>
+
+  <section data-background="#1976d2">
+    <h2>Direktivy</h2>
+    <p>
+      V kostce... dávají existujícím prvkům nové vlastnosti. 
+    </p>
+    <ul>
+    <li>Strukturální direktivy</li>
+    <li>Atributové directivy</li>
+    </ul>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Strukturální directivy</h2>
+    <p>Mění strukturu a složení v závislosti na přidávání, odstraňování nebo změně stavu.</p>
+    <pre><code data-trim>
+    &lt;li *ngFor=&quot;let hero of heroes&quot;&gt;&lt;/li&gt;
+    &lt;hero-detail *ngIf=&quot;selectedHero&quot;&gt;&lt;/hero-detail&gt;
+    </code></pre>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Atributové directivy</h2>
+    <p>Mění vzhled nebo chování existujících elementů. V šabloně jsou deklarované jako běžné atributy html prvků a proto nesou toto označení.</p>
+    <ul>
+    <li>ngStyle</li>
+    <li>ngClass</li>
+    <li>ngSwitch</li>
+    <li>ngForm</li>
+    </ul>
+    <pre><code data-trim>
+    <div [style.color]="isSpecial ? 'red' : 'green'">Signál</div>
+    <div [class.disabled]="isDisabled">Deaktivovat</div>
+    </code></pre>
+    <a href="https://angular.io/docs/ts/latest/guide/template-syntax.html#!#directives">Vestavěné direktivy<sup>*</sup></a>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>ngForm</h2>
+    <p>Odpovídá přibližně tomuto:</p>
+    <pre><code data-trim>
+    &lt;input
+      [ngModel]="firstName"
+      (ngModelChange)="firstName = $event"&gt;
+    </code></pre>
+    <p>
+      Funguje jen pro elementy formulářů.
+    </p>
+  </section>
+
+  <section data-background="#1976d2">
+    <h2>Moduly</h2>
+    <pre><code data-trim>
+    @NgModule({
+      imports: [ BrowserModule ],
+      declarations: [ AppComponent ],
+      bootstrap: [ AppComponent ],
+      providers: [ AppService ]
+    })
+    export class AppModule {}
+    </code></pre>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Routing</h2>
+    <p>Směrování požadavků</p>
+    <pre><code data-trim>
+    const appRoutes: Routes = [
+      { path: 'hero/:id', component: HeroDetailComponent },
+      { path: 'crisis-center', component: CrisisListComponent },
+      { path: 'heroes', component: HeroListComponent,
+        data: { title: 'Heroes List' }},
+      { path: '', component: HomeComponent },
+      { path: '**', component: PageNotFoundComponent }
+    ];
+    
+    @NgModule({
+      imports: [ RouterModule.forRoot(appRoutes) ]
+    })
+    </code></pre>
+  </section>
+    
+  <section data-background="#1976d2">
+    <h2>Roury / pipes</h2>
+    <pre><code data-trim>
+    <p>The hero's birthday is {{ birthday | date: "MM/dd/yy" }} </p>
+    </code></pre>
+    <p>async pipe</p>
+  </section>    
+</section>
+
+<section>    
+  <section>
+    <h2>Redux</h2>
+    <p>Architektura tvorby aplikací populární převážně ve světě Reactjs</p>
+    <ul>
+      <li>Store</li>
+      <li>Actions</li>
+      <li>Reducers</li>
+      <li>View = Komponenty + šablony</li>
+    </ul>
+  </section>
+    
+  <section>
+    <img src="./redux-diagram.png">
+  </section>
+
+  <section>
+    <img src="https://elmbridge.github.io/curriculum/images/elm-architecture-4.jpeg">
+  </section>
+
+  <section>
+    <h2>Store</h2>
+    <ul>
+      <li>Drží aplikační stav, je to jediný zdroj pravdy</li>
+      <li>Je konceptuálně jen pro čtení</li>
+      <li>Změny stavu se realizují pouze odesláním akce (Action)</li>      
+    </ul>
+  </section>
+
+  <section>
+    <h2>Action</h2>
+    <ul>
+      <li>Obsahuje své označení a případně nějaká data</li>
+      <li>Akce se předává Store (dispatch)</li>
+      <li>Store vybere reducer a nechá jej zpracovat akci</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Reducer</h2>
+    <ul>
+      <li>Čistá (pure) funkce</li>
+      <li><code>function reducer(state, action) { ... return newState; }</code></li>
+      <li>Obvykle jde o celou paletu reducerů, každý zpracovává jinou část stavu</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>View</h2>
+    <ul>      
+      <li>Zobrazí (nový) stav aplikace</li>
+      <li>Aktualizuje se tak, že se přihlásí k odběru změn stavu ze Store</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Sada knihovny NgRx</h2>
+    <ul>
+      <li><span style="color: rgb(255, 123, 123)">@ngrx/store</span> - Implementace Redux storu pomocí knihovny RxJS</li>
+      <li><span style="color: rgb(255, 123, 123)">@ngrx/effects</span> - Knihovna na vedlejší efekty pro store</li>
+      <li><span style="color: rgb(255, 123, 123)">@ngrx/router-store</span> - Napojení angular routeru na store</li>
+      <li><span style="color: rgb(255, 123, 123)">@ngrx/store-devtools</span> - Enhancer pro store s podporou debugger s vlastností cestování časem</li>
+      <li><span style="color: rgb(255, 123, 123)">@ngrx/entity</span> - adaptér na entity, umožňuje snadnou implementaci CRUD</li>
+    </ul>
+  </section>
+</section>
+
+<section>
+<h2>Q &amp; A</h2>
+</section>
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/lib/js/head.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+	controls: true,
+	progress: true,
+	history: true,
+	center: true,
+	transition: 'slide', // none/fade/slide/convex/concave/zoom
+	// Optional reveal.js plugins
+	dependencies: [
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/plugin/zoom-js/zoom.js', async: true },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/plugin/notes/notes.js', async: true }
+	]
+});
+</script>
+
+</body>
+</html>

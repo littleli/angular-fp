@@ -1,0 +1,2 @@
+# Slidy pro funkcionální Angular
+

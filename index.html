@@ -514,7 +514,7 @@ document.getElementsByTagName('head')[0].appendChild(link);
   </section>
 
   <section>
-    <h2>Sada knihovny NgRx</h2>
+    <h2>Sada knihoven NgRx</h2>
     <ul>
       <li><span style="color: rgb(255, 123, 123)">@ngrx/store</span> - Implementace Redux storu pomocí knihovny RxJS</li>
       <li><span style="color: rgb(255, 123, 123)">@ngrx/effects</span> - Knihovna na vedlejší efekty pro store</li>
@@ -522,6 +522,29 @@ document.getElementsByTagName('head')[0].appendChild(link);
       <li><span style="color: rgb(255, 123, 123)">@ngrx/store-devtools</span> - Enhancer pro store s podporou debugger s vlastností cestování časem</li>
       <li><span style="color: rgb(255, 123, 123)">@ngrx/entity</span> - adaptér na entity, umožňuje snadnou implementaci CRUD</li>
     </ul>
+  </section>
+
+  <section>
+    <h2>Benefity NgRx / Reduxu</h2>
+    <ul>
+      <li>Deterministické renderování</li>
+      <li>Deterministická reprodukce stavu</li>
+      <li>Oddělení asynchronních operací od synchronní práce se stavem</li>
+      <li>Snadné testování</li>
+      <li>Jednoduché undo/redo</li>
+      <li>Time-travel debugging</li>
+      <li>Snadná serializace</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Proč nepoužít NgRx / Redux</h2>
+    <ul>
+      <li>Uživatelská workflow jsou jednoduchá / celoobrazovková</li>
+      <li>Uživatelé nespolupracují v rámci aplikace</li>
+      <li>Nezpracováváte websockety nebo SSE (server-sent events)</li>
+      <li>Získáváte pro každé view jen jeho data</li>
+    </ul>  
   </section>
 </section>
 
